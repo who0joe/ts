@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; }
+        input, select { margin: 5px; padding: 8px; width: 200px; }
+        button { padding: 10px 15px; background: #4CAF50; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="structName" placeholder="구조체 이름 (예: MyStruct)">
+        
+        <div id="members">
+            <div class="member">
+                <select class="dataType">
+                    <option value="int">int</option>
+                    <option value="float">float</option>
+                    <option value="char">char</option>
+                    <option value="double">double</option>
+                </select>
+                <input type="text" class="memberName" placeholder="멤버 이름">
+            </div>
+        </div>
+
+        <button onclick="addMember()">멤버 추가</button>
+        <button onclick="generateStruct()">구조체 생성</button>
+    </div>
+
+    <script>
+        function addMember() {
+            const newMember = document.querySelector('.member').cloneNode(true);
+            newMember.querySelector('.memberName').value = '';
+            document.getElementById('members').appendChild(newMember);
+        }
+
+        function generateStruct() {
+            const structName = document.getElementById('structName').value;
+            if (!structName) {
+                alert('구조체 이름을 입력하세요.');
+                return;
+            }
+
+            let members = [];
+            document.querySelectorAll('.member').forEach(member => {
+                const dataType = member.querySelector('.dataType').value;
+                const memberName = member.querySelector('.memberName').value;
+                if (memberName) members.push(`    ${dataType} ${memberName};`);
+            });
+
+            const structContent = `typedef struct {\n${members.join('\n')}\n} ${structName};`;
+            const blob = new Blob([structContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${structName}.h`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
